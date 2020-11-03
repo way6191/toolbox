@@ -1,32 +1,54 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <el-container>
+      <el-aside width="200px">
+        <div class="boxname">
+          TOOL BOX
+        </div>
+        <el-menu router>
+          <el-menu-item index="createeb">
+            <span slot="title">エビ作成</span>
+          </el-menu-item>
+        </el-menu>
+      </el-aside>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
+<script>
+  export default {
+
+  }
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+  html,
+  body,
+  #app,
+  .el-container {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
-#nav {
-  padding: 30px;
-}
+  .el-aside {
+    color: #409EFF;
+    text-align: center;
+  }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+  .boxname {
+    padding: 20px;
+    border: 5px solid #409EFF;
+    border-right: 0;
+  }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+  .el-main {
+    background-color: #FFFFFF;
+    color: #333;
+    border: 10px solid #409EFF;
+    border-bottom: 0;
+  }
 </style>
