@@ -4,6 +4,12 @@ import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const path = require('path');
+
+var child_process = require('child_process');
+var exec = child_process.exec;
+var openExec;
+var server = path.join(__dirname, "preload.js");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -22,7 +28,8 @@ function createWindow() {
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+      nodeIntegration: true,
+      preload: server
     }
   })
 
@@ -39,6 +46,19 @@ function createWindow() {
   win.on('closed', () => {
     win = null
   })
+
+  
+
+  openExec = exec('node ' + server, function (error, stdout, stderr) {
+    if (error) {
+      console.log(error.stack);
+      console.log('Error code: ' + error.code);
+      return;
+    }
+    console.log('stdout: ' + stdout);
+    console.log(`stderr: ${stderr}`);
+    console.log(process.pid)
+  });
 }
 
 // Quit when all windows are closed.
@@ -47,6 +67,20 @@ app.on('window-all-closed', () => {
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit()
+
+    if (!openExec) {
+      console.log('openExec is null')
+    } else {
+      exec('taskkill /f /t /im node.exe', function (error, stdout, stderr) {
+        if (error) {
+          console.log(error.stack);
+          console.log('Error code: ' + error.code);
+          return;
+        }
+        console.log('stdout: ' + stdout);
+        console.log(`stderr: ${stderr}`);
+      });
+    }
   }
 })
 

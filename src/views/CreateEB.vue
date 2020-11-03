@@ -27,15 +27,13 @@
     </el-card>
 
     <el-card>
-      <el-button type="primary" @click="createExcel">生成</el-button>
+      <el-button type="primary" onclick="createExcel()">生成</el-button>
     </el-card>
 
   </div>
 </template>
 
 <script>
-  import ExcelUtil from '../util/ExcelUtil';
-
   export default {
     data() {
       return {
@@ -50,9 +48,6 @@
       }
     },
     methods: {
-      createExcel() {
-        ExcelUtil.createExcel();
-      }
     }
   }
 </script>
