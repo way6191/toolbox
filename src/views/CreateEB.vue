@@ -27,7 +27,7 @@
     </el-card>
 
     <el-card>
-      <el-button type="primary" onclick="createExcel()">生成</el-button>
+      <el-button type="primary" @click="createExcel">生成</el-button>
     </el-card>
 
   </div>
@@ -48,6 +48,9 @@
       }
     },
     methods: {
+      createExcel(){
+        this.$http.get('/createExcel');
+      }
     }
   }
 </script>
