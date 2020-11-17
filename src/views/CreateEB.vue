@@ -10,10 +10,10 @@
     <el-card>
       <el-form :model="form" label-position="right" label-width="110px">
         <el-form-item label="テンプレート">
-          <el-input v-model="form.samplePath"></el-input>
+          <el-input v-model="form.tplPath"></el-input>
         </el-form-item>
-        <el-form-item label="タイトル高さ">
-          <el-slider :step="1" :max="5" show-stops v-model="form.titleHeight">
+        <el-form-item label="上に間隔行数">
+          <el-slider :step="1" :max="5" show-stops v-model="form.shift">
           </el-slider>
         </el-form-item>
         <el-form-item label="画像フォルダー">
@@ -38,18 +38,21 @@
     data() {
       return {
         form: {
-          samplePath: '',
-          sample: '',
-          titleHeight: 2,
+          tplPath: '',
+          shift: 2,
           imgFolder: '',
-          img: '',
           scale: 1
         }
       }
     },
     methods: {
       createExcel(){
-        this.$http.get('/createExcel');
+        this.$http.post('/createExcel', {
+          tplPath: this.form.tplPath,
+          shift: this.form.shift,
+          imgFolder: this.form.imgFolder,
+          scale: this.form.scale
+        });
       }
     }
   }
