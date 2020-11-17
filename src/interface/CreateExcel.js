@@ -1,19 +1,69 @@
 const Excel = require('exceljs');
 const sizeOf = require('image-size');
+var fs = require('fs');
+var path = require('path');
+const util = require('util');
 
-async function getSample({tplPath, shift, imgFolder, scale}) {
+const readdir = util.promisify(fs.readdir);
+
+/**
+ * imgFolder取得
+ * @param Folder 対象フォルダー
+ */
+async function getFolder(Folder) {
+  let folders;
+  try {
+    folders = await readdir(Folder);
+  } catch (e) {
+    console.log(e);
+  }
+  return folders || [];
+}
+
+/**
+ * img取得
+ * @param imgFolder 対象フォルダー
+ */
+async function getImg(imgFolder) {
+  let imgs;
+  try {
+    imgs = await readdir(imgFolder);
+  } catch (e) {
+    console.log(e);
+  }
+  return imgs || [];
+}
+
+async function createExcel({
+  tplPath,
+  shift,
+  folder,
+  scale
+}) {
+  tplPath = "C:\\Users\\505304\\Desktop\\test\\sample.xlsx",
+    shift = 2,
+    folder = "C:\\Users\\505304\\Desktop\\test\\image",
+    scale = 0.5
 
   const outname = tplPath.replace(".xlsx", "-created.xlsx");
 
+  const imgFolders = await getFolder(folder);
+
   const newbook = new Excel.Workbook();
 
-  for (let index = 0; index < 1; index++) {
+  for (let index = 0; index < imgFolders.length; index++) {
+    foldername = imgFolders[index];
+
     const workbook = new Excel.Workbook();
     await workbook.xlsx.readFile(tplPath);
-
+  
     const worksheet = workbook.getWorksheet("sample");
+
+    //  フォルダーパース
+    let imgFolder = path.join(folder, foldername);
+
     // シートを新規
-    let newsheet = newbook.addWorksheet("No" + index);
+    let newsheet = newbook.addWorksheet(foldername);
     // シート属性設定
     newsheet.rowBreaks = worksheet.rowBreaks;
     newsheet.properties = worksheet.properties;
@@ -55,16 +105,21 @@ async function getSample({tplPath, shift, imgFolder, scale}) {
 
     let printAreaHeight = parseInt(printEndRow) - parseInt(printTitleHeight);
 
+    const imgs = await getImg(imgFolder);
+    
     let pageSize = 0;
 
     // 画像を挿入
-    for (let index = 0; index < 5; index++) {
+    for (let i = 0; i < imgs.length; i++) {
+      imgName = imgs[i];
       // ページ
-      pageSize = index;
+      pageSize = i;
+      // イメージパース
+      var img = path.join(imgFolder, imgName);
       // 移動を計算
       let move = parseInt(printTitleHeight) + parseInt(printAreaHeight * pageSize);
 
-      if (index > 0) {
+      if (i > 0) {
         worksheet.eachRow((row, rowNum) => {
           if (rowNum > printTitleHeight && rowNum !== lastRowNum) {
             const r = newsheet.addRow();
@@ -85,12 +140,12 @@ async function getSample({tplPath, shift, imgFolder, scale}) {
 
       // イメージ読み取
       const imageId1 = newbook.addImage({
-        filename: 'C:/Users/505304/Desktop/test/image/1/1.png',
-        extension: 'png',
+        filename: img,
+        extension: path.extname(img),
       });
 
-      let imgprop = sizeOf('C:/Users/505304/Desktop/test/image/1/1.png');
-      
+      let imgprop = sizeOf(img);
+
       let imgConfig = {};
       // イメージ位置調整
       imgConfig.tl = {
@@ -105,14 +160,12 @@ async function getSample({tplPath, shift, imgFolder, scale}) {
       // イメージ挿入
       newsheet.addImage(imageId1, imgConfig);
     }
-
     // 印刷範囲を計算
     printEnd = printEndColumn + (parseInt(printEndRow) + (parseInt(printAreaHeight) * pageSize));
     // 印刷範囲を調整
     newsheet.pageSetup.printArea = printStart + ":" + printEnd;
   }
-
   await newbook.xlsx.writeFile(outname);
 }
 
-module.exports = getSample;
+module.exports = createExcel;
