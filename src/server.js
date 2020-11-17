@@ -15,8 +15,12 @@ app.use(bodyParser.json());
 
 app.post('/createExcel', (req, res) => {
   const param = req.body;
-  createExcel(param);
-  res.end();
+  let result = false;
+
+  createExcel(param, isok => {
+    result = isok;
+    res.end(JSON.stringify(result));
+  });
 })
 
 app.listen(port, () => {
