@@ -10,10 +10,10 @@ const readdir = util.promisify(fs.readdir);
  * imgFolder取得
  * @param Folder 対象フォルダー
  */
-async function getFolder(Folder) {
+async function getFolder(folder) {
   let folders;
   try {
-    folders = await readdir(Folder);
+    folders = await readdir(folder);
   } catch (e) {
     console.log(e);
   }
@@ -40,11 +40,6 @@ async function createExcel({
   folder,
   scale
 }) {
-  tplPath = "C:\\Users\\505304\\Desktop\\test\\sample.xlsx",
-    shift = 2,
-    folder = "C:\\Users\\505304\\Desktop\\test\\image",
-    scale = 0.5
-
   const outname = tplPath.replace(".xlsx", "-created.xlsx");
 
   const imgFolders = await getFolder(folder);
@@ -56,7 +51,7 @@ async function createExcel({
 
     const workbook = new Excel.Workbook();
     await workbook.xlsx.readFile(tplPath);
-  
+
     const worksheet = workbook.getWorksheet("sample");
 
     //  フォルダーパース
@@ -106,7 +101,7 @@ async function createExcel({
     let printAreaHeight = parseInt(printEndRow) - parseInt(printTitleHeight);
 
     const imgs = await getImg(imgFolder);
-    
+
     let pageSize = 0;
 
     // 画像を挿入
@@ -115,7 +110,8 @@ async function createExcel({
       // ページ
       pageSize = i;
       // イメージパース
-      var img = path.join(imgFolder, imgName);
+      let img = path.join(imgFolder, imgName);
+      let imgtype = path.extname(img).replace(".", "");
       // 移動を計算
       let move = parseInt(printTitleHeight) + parseInt(printAreaHeight * pageSize);
 
@@ -141,7 +137,7 @@ async function createExcel({
       // イメージ読み取
       const imageId1 = newbook.addImage({
         filename: img,
-        extension: path.extname(img),
+        extension: imgtype,
       });
 
       let imgprop = sizeOf(img);

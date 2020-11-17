@@ -8,7 +8,9 @@ const app = express()
 const port = 9191
 
 app.use(cors())
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(bodyParser.json());
 
 app.post('/createExcel', (req, res) => {

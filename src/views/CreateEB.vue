@@ -12,12 +12,12 @@
         <el-form-item label="テンプレート">
           <el-input v-model="form.tplPath"></el-input>
         </el-form-item>
-        <el-form-item label="上に間隔行数">
+        <el-form-item label="画像フォルダー">
+          <el-input v-model="form.folder"></el-input>
+        </el-form-item>
+        <el-form-item label="画像間隔行数">
           <el-slider :step="1" :max="5" show-stops v-model="form.shift">
           </el-slider>
-        </el-form-item>
-        <el-form-item label="画像フォルダー">
-          <el-input v-model="form.imgFolder" webkitdirectory></el-input>
         </el-form-item>
         <el-form-item label="画像倍率">
           <el-slider :step="0.1" :max="2" show-stops v-model="form.scale">
@@ -40,17 +40,17 @@
         form: {
           tplPath: '',
           shift: 2,
-          imgFolder: '',
+          folder: '',
           scale: 1
         }
       }
     },
     methods: {
-      createExcel(){
+      createExcel() {
         this.$http.post('/createExcel', {
           tplPath: this.form.tplPath,
           shift: this.form.shift,
-          imgFolder: this.form.imgFolder,
+          folder: this.form.folder,
           scale: this.form.scale
         });
       }
