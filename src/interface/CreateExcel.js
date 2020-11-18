@@ -42,6 +42,9 @@ async function createExcel({
   },
   callback) {
   try {
+    const filetype = path.extname(tplPath).replace(".", "");
+    if (!filetype === ".xlsx") callback(fase);
+
     const outname = tplPath.replace(".xlsx", "-created.xlsx");
 
     const imgFolders = await getFolder(folder);
