@@ -2,7 +2,7 @@
   <div id="app">
     <el-container>
       <el-aside width="200px">
-        <div class="boxname">
+        <div class="boxname" @click="toHomePage">
           TOOL BOX
         </div>
         <el-menu router>
@@ -20,7 +20,13 @@
 
 <script>
   export default {
-
+    methods: {
+      toHomePage() {
+        this.$router.push({
+          path: '/'
+        });
+      }
+    }
   }
 </script>
 
