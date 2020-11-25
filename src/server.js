@@ -3,6 +3,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 
 const createExcel = require('./interface/CreateExcel.js')
+const getAll = require('./interface/GetReleaseInfo.js')
 
 const app = express()
 const port = 9191
@@ -21,6 +22,14 @@ app.post('/createExcel', (req, res) => {
     result = isok;
     res.end(JSON.stringify(result));
   });
+})
+
+app.get('/getReleaseInfo', (req, res) => {
+  const param = req.query;
+
+  let result = getAll(param.folder);
+
+  res.end(JSON.stringify(result));
 })
 
 app.listen(port, () => {

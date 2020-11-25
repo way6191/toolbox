@@ -9,6 +9,9 @@
           <el-menu-item index="createeb">
             <span slot="title">エビ作成</span>
           </el-menu-item>
+          <el-menu-item index="releaseinfo">
+            <span slot="title">リリース票</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>
